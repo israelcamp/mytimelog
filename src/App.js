@@ -1,9 +1,9 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function calculateHourMinutes(deltaSeconds) {
   const hours = Math.floor(deltaSeconds / 3600);
-  const minutes = Math.round((deltaSeconds - hours * 3600) / 60);
+  const minutes = Math.floor((deltaSeconds - hours * 3600) / 60);
   return { hours, minutes };
 }
 
@@ -44,7 +44,6 @@ function logTasks(tasksLogs) {
 }
 
 function totalLogDisplay(tasksLogs) {
-  console.log(tasksLogs);
   if (tasksLogs.length < 1) return;
   var totalSeconds = 0;
   for (const a of tasksLogs) totalSeconds += a.duration.deltaSeconds;
@@ -79,8 +78,21 @@ function totalLogDisplay(tasksLogs) {
 
 function App() {
   const [taskName, setTaskName] = useState("arrived **");
-  const [taskStartTime, setTaskStartTime] = useState(null);
+  const [taskStartTime, setTaskStartTime] = useState(new Date());
+  const [everyMinuteDate, setEveryMinuteDate] = useState(new Date());
   const [tasksLogs, setTasksLogs] = useState([]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setEveryMinuteDate(new Date());
+    }, 1000 * 60);
+    return () => clearInterval(interval);
+  }, []);
+
+  const calculateTaskDuration = (start, end) => {
+    const { hours, minutes } = calculateDelta(end, start);
+    return <>{`${hours}h ${minutes < 10 ? "0" : ""}${minutes}min`}</>;
+  };
 
   const handleLog = (taskName, start, end) => {
     const duration = calculateDelta(end, start);
@@ -91,6 +103,7 @@ function App() {
     setTasksLogs([...tasksLogs, newLog]);
     setTaskName("");
     setTaskStartTime(end);
+    setEveryMinuteDate(new Date());
   };
 
   const handleAddClick = () => {
@@ -109,6 +122,7 @@ function App() {
       <header className="App-header">
         <div>{totalLogDisplay(tasksLogs)}</div>
         <div className="Insert-task">
+          {calculateTaskDuration(taskStartTime, everyMinuteDate)}
           <input
             className="input-task"
             value={taskName}
