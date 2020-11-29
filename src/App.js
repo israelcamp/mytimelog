@@ -31,11 +31,17 @@ function logTasks(tasksLogs) {
       <tbody>
         {tasksLogs.map(({ name, duration }) => (
           <tr key={name} className="tr-logs">
-            <td className="td-duration">{`${duration.hours}h ${duration.minutes}min`}</td>
+            <td className="td-duration">{`${duration.hours}h ${
+              duration.minutes < 10 ? "0" : ""
+            }${duration.minutes}min`}</td>
             <td className="td-interval">{`${dateDisplay(
               duration.start
             )} - ${dateDisplay(duration.end)}`}</td>
-            <td className="td-name">{name}</td>
+            {name.endsWith("**") ? (
+              <td className="td-name-ignore">{name}</td>
+            ) : (
+              <td className="td-name">{name}</td>
+            )}
           </tr>
         ))}
       </tbody>
@@ -46,7 +52,9 @@ function logTasks(tasksLogs) {
 function totalLogDisplay(tasksLogs) {
   if (tasksLogs.length < 1) return;
   var totalSeconds = 0;
-  for (const a of tasksLogs) totalSeconds += a.duration.deltaSeconds;
+  for (const a of tasksLogs)
+    if (!a.name.endsWith("**")) totalSeconds += a.duration.deltaSeconds;
+
   const { hours, minutes } = calculateHourMinutes(totalSeconds);
 
   let hoursLeft = hours < 8 ? 8 - hours - 1 : 0;
@@ -91,7 +99,7 @@ function App() {
 
   const calculateTaskDuration = (start, end) => {
     const { hours, minutes } = calculateDelta(end, start);
-    return <>{`${hours}h ${minutes < 10 ? "0" : ""}${minutes}min`}</>;
+    return <>{`${hours}h ${minutes < 10 ? "0" : ""}${minutes}m`}</>;
   };
 
   const handleLog = (taskName, start, end) => {

@@ -94,8 +94,14 @@ table {
 .td-interval {
   color: #33cc33;
 }
+
 .td-name {
   color: #c0c0c0;
+  text-align: left;
+}
+
+.td-name-ignore {
+  color: #808080;
   text-align: left;
 }
 
