@@ -50,8 +50,12 @@ function totalLogDisplay(tasksLogs) {
   for (const a of tasksLogs) totalSeconds += a.duration.deltaSeconds;
   const { hours, minutes } = calculateHourMinutes(totalSeconds);
 
-  const hoursLeft = hours < 8 ? 8 - hours - 1 : 0;
-  const minutesLeft = hours < 8 ? 60 - minutes : 0;
+  let hoursLeft = hours < 8 ? 8 - hours - 1 : 0;
+  let minutesLeft = hours < 8 ? 60 - minutes : 0;
+  if ((hoursLeft === 7) & (minutesLeft === 60)) {
+    hoursLeft = 8;
+    minutesLeft = 0;
+  }
 
   return (
     <table>
