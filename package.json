@@ -1,5 +1,6 @@
 {
-  "name": "timelog-ts",
+  "name": "timelog",
+  "homepage": "https://israelcamp.github.io/mytimelog",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
